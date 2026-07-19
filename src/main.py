@@ -2,8 +2,12 @@ from searcher import search_file
 
 
 base_dir = input('Seacrh path: ')
-pattern = input('File name: '), input('Extension: [ exp: .py ] '), input('Size: [ exp: > 10 KB ] ').split()
-
+pattern = (
+    input('File name: '), 
+    input('Extension: [ exp: .py ] '), 
+    input('Size: [ exp: > 10 KB ] ').split(),
+    input('Days since creation: ')
+)
 def main():
     files = search_file(base_dir, pattern)
 
