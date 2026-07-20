@@ -1,12 +1,13 @@
 from searcher import search_file
+import asker as ask
 
 
 base_dir = input('Search path: ')
 pattern = (
-    input('File name: '),
-    input('Extension: [ exp: .py ] '),
-    input('Size: [ exp: > 10 KB ] ').split(),
-    input('Days since creation: ')
+    ask.ask_name(),
+    ask.ask_ext(),
+    ask.ask_size(),
+    ask.ask_days()
 )
 if input('\nInclude search in the file? [Y/N] ').lower() != 'n':
     pattern += (input('Search: '),)
