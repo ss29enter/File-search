@@ -2,7 +2,7 @@ from pathlib import Path
 import filters 
 
 
-def search_file(directory, pattern):
+def search_file(*args):
     """
     Recursively search directory and return matching files.
 
@@ -13,7 +13,7 @@ def search_file(directory, pattern):
     Returns:
         Sorted list of (Path, size_str) tuples for files that match all filters.
     """
-    name, ext, size, days, search = pattern
+    directory, name, ext, days, search = tuple(args)
     directory = Path(directory)
     result = []
     
@@ -21,13 +21,12 @@ def search_file(directory, pattern):
         if (
             filters.match_name(path, name)
             and filters.match_extension(path, ext)
-            and filters.match_size(path, size)
             and filters.match_date(path, days)
             and search_in_file(path, search)
         ):
-            result.append((path, filters.format_size(path.stat().st_size)))
+            result.append(path)
 
-    return sorted(result, key=lambda x: x[0].name.lower())
+    return sorted(result, key=lambda x: x.name.lower())
 
 
 def search_in_file(file, pat):

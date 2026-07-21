@@ -2,35 +2,15 @@ import datetime
 
 
 def match_name(file, name):
-    return name.lower() in file.name.lower()
+    if name:
+        return name.lower() in file.name.lower()
+    return True
 
 
 def match_extension(file, ext):
-    return ext == file.suffix
-
-
-def match_size(file, size):
-    """
-    Compare the file size with a size condition.
-
-    Args:
-        file: pathlib.Path-like object with stat().
-        size: iterable where the first item is '=', '>' or '<',
-              followed by a numeric value and unit, e.g. ['>', '10', 'MB'].
-
-    Returns:
-        bool: True if the file size satisfies the condition.
-    """
-    operation, *size_unit = size
-    target_size = convert_to_bytes(size_unit)
-    file_size = file.stat().st_size
-
-    if operation == '=':
-        return file_size == target_size
-    elif operation == '>':
-        return file_size > target_size
-    else:
-        return file_size < target_size
+    if ext:
+        return ext == file.suffix
+    return True
 
 
 def match_date(file, recent_days):
@@ -44,12 +24,18 @@ def match_date(file, recent_days):
     Returns:
         bool: True if the file is newer than recent_days.
     """
-    date_modified = datetime.datetime.fromtimestamp(file.stat().st_mtime)
-    date_now = datetime.datetime.now()
-    recent_days = int(recent_days)
+    if recent_days:
+        date_modified = datetime.datetime.fromtimestamp(file.stat().st_mtime)
+        date_now = datetime.datetime.now()
+        recent_days = int(recent_days)
 
-    diff_days = (date_now - date_modified).days
-    return diff_days < recent_days
+        diff_days = (date_now - date_modified).days
+        return diff_days < recent_days
+    return True
+
+
+def match_size(file, size):
+    pass
 
 
 def convert_to_bytes(size):
@@ -76,7 +62,7 @@ def convert_to_bytes(size):
         return size_int * 2**30
     
 
-def format_size(size,dec=2):
+def format_size(size):
     """
     Format a byte count as a human-readable size string.
     """
@@ -88,4 +74,4 @@ def format_size(size,dec=2):
     import math
     i = int(math.floor(math.log(size, power)))
     
-    return f'{size/(power**i):.{dec}f} {units[i]}'
+    return f'{size/(power**i):.2f} {units[i]}'
