@@ -14,6 +14,9 @@ def match_extension(file, ext):
 
 
 def match_date(file, recent_days):
+    """
+    Return True if the file was modified within recent_days.
+    """
     if recent_days:
         date_modified = datetime.fromtimestamp(file.stat().st_mtime)
         date_now = datetime.now()
@@ -24,6 +27,9 @@ def match_date(file, recent_days):
 
 
 def match_size(file, size):
+    """
+    Return True if the file size meets the size condition.
+    """
     if size:
         full_size, unit = tuple(size)
         full_size = int(full_size)
@@ -36,6 +42,16 @@ def match_size(file, size):
 
 
 def convert_to_bytes(size, unit):
+    """
+    Convert a numeric size and unit into bytes.
+    
+    Args:
+        size: numeric value.
+        unit: size unit ('B', 'KB', 'MB', 'GB').
+        
+    Returns:
+        int: byte count.
+    """
     int_size = int(size)
     if int_size == 0:
         return 0
@@ -47,15 +63,3 @@ def convert_to_bytes(size, unit):
         return int_size * 2**20
     else:
         return int_size * 2**30
-    
-
-def format_size(size):
-    if size == 0:
-        return '0 B'
-    
-    power = 1024
-    units = ['B','KB','MB']
-    import math
-    i = int(math.floor(math.log(size, power)))
-    
-    return f'{size/(power**i):.2f} {units[i]}'

@@ -1,10 +1,12 @@
 from searcher import search_file
 from pathlib import Path
-import filters
 import argparse
 
 
 def parse_arguments():
+    """
+    Parse and return command-line arguments for the file search tool.
+    """
     parser = argparse.ArgumentParser(
         prog='File-searcher',
         description='Search for files based on specified parameters',
@@ -44,7 +46,31 @@ def parse_arguments():
     return parser.parse_args()
 
 
+def format_size(size):
+    """
+    Convert byte count into a human-readable size string.
+    
+    Args:
+        size: byte count as int.
+        
+    Returns:
+        str: formatted size with unit (B, KB, MB, GB).
+    """
+    if size == 0:
+        return '0 B'
+    
+    power = 1024
+    units = ['B','KB','MB','GB']
+    import math
+    i = int(math.floor(math.log(size, power)))
+    
+    return f'{size/(power**i):.2f} {units[i]}'
+
+
 def main():
+    """
+    Execute file search and display results with file sizes.
+    """
     args = parse_arguments()
 
     try:
@@ -53,7 +79,7 @@ def main():
         print(f'\n> Found: {len(files)} files')
 
         for id, file in enumerate(files, 1):
-                size = filters.format_size(file.stat().st_size)
+                size = format_size(file.stat().st_size)
                 print(f'{id}. {file.relative_to(search_dir)} ({size})')
 
     except Exception as error:
