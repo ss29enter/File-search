@@ -6,7 +6,8 @@ import argparse
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
-        description='> Recursive search for files based on specified parameters'
+        prog='File-searcher',
+        description='Search for files based on specified parameters',
     )
     parser.add_argument(
         "-p", "--path",
@@ -19,12 +20,19 @@ def parse_arguments():
         help="File name or part of the file name"
     )
     parser.add_argument(
-        "-x", "--extension",
+        "-ext", "--extension",
         action='store',
         help="File extension, e.g. '.py'"
     )
     parser.add_argument(
+        "-s", "--minsize",
+        action='store',
+        nargs=2,
+        help="Minimum file size in Bytes, Kilobytes, Megabytes, e.g. '10 MB'"
+    )
+    parser.add_argument(
         "-d", "--days",
+        type=int,
         action='store',
         help="Files that have been modified in the last N days"
     )
@@ -38,15 +46,19 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    files = search_file(args.path, args.name, args.extension, args.days, args.search)
-    search_dir = Path(args.path)
-    print(f'\n> Found: {len(files)} files')
 
-    for id, file in enumerate(files, 1):
-        size = filters.format_size(file.stat().st_size)
+    try:
+        files = search_file(args.path, args.name, args.extension, args.days, args.search, args.minsize)
+        search_dir = Path(args.path)
+        print(f'\n> Found: {len(files)} files')
 
-        print(f'{id}. {file.relative_to(search_dir)} ({size})')
+        for id, file in enumerate(files, 1):
+                size = filters.format_size(file.stat().st_size)
+                print(f'{id}. {file.relative_to(search_dir)} ({size})')
 
+    except Exception as error:
+        print(f'OOPS... error: {error}')
 
+    
 if __name__ == '__main__':
     main()

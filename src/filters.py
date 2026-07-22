@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 
 def match_name(file, name):
@@ -14,20 +14,9 @@ def match_extension(file, ext):
 
 
 def match_date(file, recent_days):
-    """
-    Check if the file was modified within the last recent_days days.
-
-    Args:
-        file: pathlib.Path-like object with stat().
-        recent_days: number of days as int or str.
-
-    Returns:
-        bool: True if the file is newer than recent_days.
-    """
     if recent_days:
-        date_modified = datetime.datetime.fromtimestamp(file.stat().st_mtime)
-        date_now = datetime.datetime.now()
-        recent_days = int(recent_days)
+        date_modified = datetime.fromtimestamp(file.stat().st_mtime)
+        date_now = datetime.now()
 
         diff_days = (date_now - date_modified).days
         return diff_days < recent_days
@@ -35,37 +24,32 @@ def match_date(file, recent_days):
 
 
 def match_size(file, size):
-    pass
+    if size:
+        full_size, unit = tuple(size)
+        full_size = int(full_size)
+        bytes = convert_to_bytes(full_size, unit)
+        file_size = file.stat().st_size
+
+        return file_size >= bytes
+    
+    return True
 
 
-def convert_to_bytes(size):
-    """
-    Convert a size value and unit into bytes.
-
-    Args:
-        size: iterable with [value, unit], e.g. ['10', 'MB'].
-
-    Returns:
-        int: byte count.
-    """
-    size_int, unit = size
-    size_int = int(size_int)
-    if size_int == 0:
+def convert_to_bytes(size, unit):
+    int_size = int(size)
+    if int_size == 0:
         return 0
     elif unit == 'B':
-        return size_int
+        return int_size
     elif unit == 'KB':
-        return size_int * 2**10
+        return int_size * 2**10
     elif unit == 'MB':
-        return size_int * 2**20
+        return int_size * 2**20
     else:
-        return size_int * 2**30
+        return int_size * 2**30
     
 
 def format_size(size):
-    """
-    Format a byte count as a human-readable size string.
-    """
     if size == 0:
         return '0 B'
     
