@@ -14,7 +14,7 @@ def parse_arguments():
     parser.add_argument(
         "-p", "--path",
         required=True,
-        help="Directory for searching for files"
+        help="Path to directory (required)"
     )
     parser.add_argument(
         "-n", "--name",
@@ -24,24 +24,24 @@ def parse_arguments():
     parser.add_argument(
         "-ext", "--extension",
         action='store',
-        help="File extension, e.g. '.py'"
+        help="File extension; e.g. '.py'"
     )
     parser.add_argument(
         "-s", "--minsize",
         action='store',
         nargs=2,
-        help="Minimum file size in Bytes, Kilobytes, Megabytes, e.g. '10 MB'"
+        help="Minimum file size in B, MB, KB, GB; e.g. '10 MB'"
     )
     parser.add_argument(
         "-d", "--days",
         type=int,
         action='store',
-        help="Files that have been modified in the last N days"
+        help="Modified within the last N days"
     )
     parser.add_argument(
         "-S", "--search",
         action='store',
-        help="Search for a sequence within a file"
+        help="Search for text inside files"
     )
     return parser.parse_args()
 
@@ -83,7 +83,7 @@ def main():
                 print(f'{id}. {file.relative_to(search_dir)} ({size})')
 
     except Exception as error:
-        print(f'OOPS... error: {error}')
+        print(f'OOPS... {error}')
 
     
 if __name__ == '__main__':
